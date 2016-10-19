@@ -1,0 +1,115 @@
+package Reversion;
+import javax.swing.JFormattedTextField;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+
+
+public class Sinusfunktion extends Application {
+
+	private BorderPane b;
+	static String s;
+	int cursorX = 0;
+	int cursorY = 200;
+	
+	
+	double z0;
+	static double z1 = 8;  // Amplitude
+	double z2 = 0;
+	int i = 0;
+	
+	
+	public void sinus(double f) {
+		if(i > 600)
+			return;
+		z0 = f * z1 - z2;
+		z2 = z1;
+		z1 = z0;
+		System.out.println(i + " " + (int)z0 ); 
+		drawLine(i, (int)z0) ;
+		i++;
+		//f -= 0.02;
+		sinus(f);
+	}
+	
+	public static void main(String[] args) {
+		launch(args);
+		
+	}
+
+	void drawLine(int x, int y) {
+		int endX =  x;
+		int endY =  200 - y;
+		Line line = new Line(cursorX, cursorY, endX , endY);
+		cursorX = endX;
+		cursorY = endY;
+		line.setStroke(Color.RED);
+		b.getChildren().add(line);	
+	}
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		
+	    TextField a = new TextField ();
+		Slider slider= new Slider();
+		slider.setMin(0);
+		slider.setMax(100);
+		slider.setValue(40);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+		slider.setMajorTickUnit(50);
+		slider.setMinorTickCount(5);
+		slider.setBlockIncrement(10);
+		a.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent event){
+				System.out.println(z1);
+				s = a.getText();
+				z1= Double.parseDouble(s);
+				a.setText("");
+				System.out.println(z1);
+				b.getChildren().clear();
+				z2=0;
+				i=0;
+				cursorX = 0;
+				cursorY = 200;
+				sinus(1.99);
+             				
+			
+			}
+		});
+		b = new BorderPane();
+		Scene scene = new Scene(b, 600, 400);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("Scribble");
+		
+		
+		Rectangle panel = new Rectangle(600, 400, Color.WHITESMOKE);
+		b.getChildren().add(panel);
+		//slider.setLayoutX(420);
+		//slider.setLayoutY(350);
+		//root.getChildren().add(slider);
+		//b.Pos.Top_Center(a);
+		//b.setBottom(slider);
+		b.setLeft(a);
+		b.setRight(slider);
+		primaryStage.show();		
+	    
+		sinus(1.99);
+		
+	}
+}
